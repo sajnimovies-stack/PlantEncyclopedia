@@ -1,14 +1,26 @@
-
 name: Build Android APK
-on: [push]
+
+on:
+  push:
+    branches: [ main ]  # Agar aapki branch ka naam 'master' hai toh yahan master likhein
+  workflow_dispatch:     # Is se aap manually bhi build start kar sakte hain
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Buildozer Action
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build with Buildozer
         uses: ArtemSerebriakov/buildozer-action@v1
         with:
           command: android debug
           buildozer_version: master
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: my-plant-app-apk
+          path: bin/*.apk
