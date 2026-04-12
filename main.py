@@ -5,13 +5,13 @@ from PIL import Image
 # AI Setup (Stable Version)
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
-# Model ka naam sahi format mein (gemini-1.5-flash)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Yahan model ka naam "models/" ke saath likhna zaroori hai
+model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Naeem Bhai, system update kar diya gaya hai. Ab check karein.")
+st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
 
 # Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
@@ -37,7 +37,7 @@ if source:
             5. Care Instructions: Pani aur dhoop.
             """
             
-            # Yahan humne model ko call kiya hai
+            # AI Response
             response = model.generate_content([prompt, img])
             
             st.success("Tashkees Mukammal!")
@@ -45,7 +45,6 @@ if source:
             st.write(response.text)
             
         except Exception as e:
-            # Agar ab bhi error aaye toh wo detail yahan nazar aayegi
             st.error(f"Error detail: {e}")
 
 st.divider()
