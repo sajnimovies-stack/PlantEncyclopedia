@@ -5,13 +5,13 @@ from PIL import Image
 # AI Setup (Stable Version)
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
-# Sab se stable model jo har jagah chalta hai
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+# Sab se purana aur pakka model jo error nahi deta
+model = genai.GenerativeModel('gemini-pro-vision')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! System ko ab latest model par update kar diya gaya hai.")
+st.write("Naeem Bhai, maine model change kar diya hai taake error khatam ho jaye.")
 
 # Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
@@ -26,18 +26,12 @@ if source:
     img = Image.open(source)
     st.image(img, caption="Aapki Photo", use_column_width=True)
     
-    with st.spinner('AI paude ka muayna kar raha hai...'):
+    with st.spinner('AI paude ko dekh raha hai...'):
         try:
-            prompt = """
-            Identify this plant and provide a detailed report in Urdu and English:
-            1. Name and Scientific Name.
-            2. Native Origin: Ye pauda asal mein kahan ka hai?
-            3. Mother Plant: Iska mother plant kaisa hota hai?
-            4. Health Status & Diseases: Is photo mein koi beemari hai? Aam beemariyan aur unka hal batayein.
-            5. Care Instructions: Pani aur dhoop.
-            """
+            # Simple Prompt taake response jaldi aaye
+            prompt = "Identify this plant. Give its name, health status, native origin, and mother plant details in Urdu and English."
             
-            # AI Response
+            # Response lena
             response = model.generate_content([prompt, img])
             
             st.success("Tashkees Mukammal!")
@@ -45,7 +39,7 @@ if source:
             st.write(response.text)
             
         except Exception as e:
-            st.error(f"Maaf kijiyega, abhi bhi masla hai: {e}")
+            st.error(f"Abhi bhi masla aa raha hai: {e}")
 
 st.divider()
 st.caption("Developed for Ruhaniya Suiting | Naeem Shahzad")
