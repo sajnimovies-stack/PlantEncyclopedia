@@ -5,13 +5,13 @@ from PIL import Image
 # AI Setup
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
-# Model ka naam bina 'models/' ke check karte hain, agar 404 aaye toh 'models/gemini-1.5-flash' kar dein
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Is baar poora path (models/...) likha hai taake 404 error na aaye
+model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
+st.write("Welcome Naeem Bhai! System ko dobara reset kar diya gaya hai.")
 
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
@@ -23,7 +23,7 @@ else:
 
 if source:
     img = Image.open(source)
-    st.image(img, caption="Aapki Scan ki hui Photo", use_container_width=True)
+    st.image(img, caption="Aapki Photo", use_container_width=True)
     
     with st.spinner('AI analysis kar raha hai...'):
         try:
@@ -35,12 +35,16 @@ if source:
             4. Health Status & Diseases (Beemariyan).
             5. Care Instructions.
             """
+            # Yahan humne model call kiya
             response = model.generate_content([prompt, img])
+            
             st.success("Tashkees Mukammal!")
+            st.markdown("### 📋 Report:")
             st.write(response.text)
+            
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"Maaf kijiyega, abhi bhi masla hai: {e}")
 
-# Aapki matlooba tabdeeli yahan hai:
+# Aapki branding yahan update kar di hai
 st.divider()
 st.info("Developed for Imran Qadri | djz")
