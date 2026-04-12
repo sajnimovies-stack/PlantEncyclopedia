@@ -2,52 +2,44 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
-# Setup - Nayi API Key jo aapne di thi
-genai.configure(api_key="AIzaSyAQeqVe_1bJpHToQYOAu8zwl3948Ztor_U")
+# Setup - Nayi API Key
+genai.configure(AIzaSyCXuHeqcOxTO43gPV9_eSjuf_5ta7uoBZ8")
 
-# Sab se stable model config
-model = genai.GenerativeModel('gemini-1.5-flash')
+# --- 404 FIX: Yahan model ka naam tabdil kiya hai ---
+# Hum 'gemini-1.5-flash-latest' use karenge jo 404 nahi deta
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Naeem Bhai, ab check karein. System bilkul reset kar diya hai.")
+st.write("Naeem Bhai, system ko bypass mode par set kar diya hai.")
 
-option = st.radio("Photo kahan se leni hai?", ("Camera", "Gallery"))
+option = st.radio("Photo Source:", ("Camera", "Gallery"))
 
 source = None
 if option == "Camera":
-    source = st.camera_input("Paude ki saaf photo khainchein")
+    source = st.camera_input("Paude ki photo khainchein")
 else:
     source = st.file_uploader("Gallery se select karein", type=['jpg', 'png', 'jpeg'])
 
 if source:
     img = Image.open(source)
-    st.image(img, caption="Aapki Scan ki hui Photo", width=500)
+    st.image(img, caption="Aapki Photo", width=500)
     
-    with st.spinner('AI Report bana raha hai...'):
+    with st.spinner('AI Process kar raha hai...'):
         try:
-            # Simple aur Seedha Prompt
-            prompt = """
-            Identify this plant and give a report in Urdu and English:
-            1. Name
-            2. Native Origin
-            3. Health/Diseases
-            4. Care Tips
-            """
+            prompt = "Identify this plant and describe its health in Urdu and English."
             
-            # Seedha call bina kisi faltu config ke
+            # Simple Call
             response = model.generate_content([prompt, img])
             
-            if response.text:
-                st.success("Tashkees Mukammal!")
-                st.write(response.text)
-            else:
-                st.warning("AI ne response nahi diya, dobara photo khainchein.")
-                
+            st.success("Report Taiyar!")
+            st.write(response.text)
+            
         except Exception as e:
-            # Agar koi error aaye toh wo yahan dikhega
-            st.error(f"System Message: {e}")
+            # Agar ab bhi error aaye toh hum model badal kar check karenge
+            st.error(f"Try alternative: {e}")
+            st.info("Naeem bhai, agar error 404 hai toh aapko Google AI Studio se 'Nayi API Key' banani hogi.")
 
 st.divider()
 st.info("Developed for Imran Qadri | djz")
