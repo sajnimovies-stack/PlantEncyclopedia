@@ -3,15 +3,14 @@ import google.generativeai as genai
 from PIL import Image
 
 # AI Setup
+# Naeem bhai, ye API key aur model ka rasta ab bilkul sahi hai
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
-
-# Is baar poora path (models/...) likha hai taake 404 error na aaye
-model = genai.GenerativeModel('models/gemini-1.5-flash')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! System ko dobara reset kar diya gaya hai.")
+st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
 
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
@@ -23,7 +22,8 @@ else:
 
 if source:
     img = Image.open(source)
-    st.image(img, caption="Aapki Photo", use_container_width=True)
+    # Naye Streamlit update ke mutabik 'width' ko set kiya hai
+    st.image(img, caption="Aapki Scan ki hui Photo", width=700)
     
     with st.spinner('AI analysis kar raha hai...'):
         try:
@@ -35,16 +35,12 @@ if source:
             4. Health Status & Diseases (Beemariyan).
             5. Care Instructions.
             """
-            # Yahan humne model call kiya
             response = model.generate_content([prompt, img])
-            
             st.success("Tashkees Mukammal!")
-            st.markdown("### 📋 Report:")
             st.write(response.text)
-            
         except Exception as e:
-            st.error(f"Maaf kijiyega, abhi bhi masla hai: {e}")
+            st.error(f"Error: {e}")
 
-# Aapki branding yahan update kar di hai
+# Aapki branding yahan hai
 st.divider()
 st.info("Developed for Imran Qadri | djz")
