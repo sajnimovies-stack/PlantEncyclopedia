@@ -1,17 +1,16 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from PIL import Image
 
-# AI Setup
-# Naeem bhai, ye API key aur model ka rasta ab bilkul sahi hai
-genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
-model = genai.GenerativeModel('gemini-1.5-flash')
+# AI Setup (Naya Package 2026)
+client = genai.Client(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
 st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
 
+# Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
 source = None
@@ -22,25 +21,33 @@ else:
 
 if source:
     img = Image.open(source)
-    # Naye Streamlit update ke mutabik 'width' ko set kiya hai
+    # Image display setting
     st.image(img, caption="Aapki Scan ki hui Photo", width=700)
     
-    with st.spinner('AI analysis kar raha hai...'):
+    with st.spinner('AI gehri tashkees (Deep Analysis) kar raha hai...'):
         try:
             prompt = """
             Identify this plant and provide a detailed report in Urdu and English:
             1. Name and Scientific Name.
-            2. Native Origin (Asal jagah).
-            3. Mother Plant details.
-            4. Health Status & Diseases (Beemariyan).
-            5. Care Instructions.
+            2. Native Origin: Ye pauda asal mein kis jagah se belong karta hai?
+            3. Mother Plant: Iska mother plant kaisa hota hai?
+            4. Health Status & Diseases: Is photo mein koi beemari nazar aa rahi hai?
+            5. Care Instructions: Pani aur dhoop ki zaroorat.
             """
-            response = model.generate_content([prompt, img])
+            
+            # Naya Model Call tareeqa
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=[prompt, img]
+            )
+            
             st.success("Tashkees Mukammal!")
+            st.markdown("### 📋 Paude ki Mukammal Report:")
             st.write(response.text)
+            
         except Exception as e:
-            st.error(f"Error: {e}")
+            st.error(f"System busy hai ya koi masla aa gaya hai: {e}")
 
-# Aapki branding yahan hai
+# Aapki final branding
 st.divider()
 st.info("Developed for Imran Qadri | djz")
