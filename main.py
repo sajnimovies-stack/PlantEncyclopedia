@@ -1,16 +1,18 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 from PIL import Image
 
-# AI Setup (Naya Package 2026)
-client = genai.Client(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
+# AI Setup - Stable API Version
+genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
+
+# Forcefully using a stable model path
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
+st.write("Welcome Naeem Bhai! Mobile camera se photo khainchein.")
 
-# Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
 source = None
@@ -21,33 +23,24 @@ else:
 
 if source:
     img = Image.open(source)
-    # Image display setting
-    st.image(img, caption="Aapki Scan ki hui Photo", width=700)
+    st.image(img, caption="Aapki Scan ki hui Photo", width=500)
     
-    with st.spinner('AI gehri tashkees (Deep Analysis) kar raha hai...'):
+    with st.spinner('AI analysis kar raha hai...'):
         try:
-            prompt = """
-            Identify this plant and provide a detailed report in Urdu and English:
-            1. Name and Scientific Name.
-            2. Native Origin: Ye pauda asal mein kis jagah se belong karta hai?
-            3. Mother Plant: Iska mother plant kaisa hota hai?
-            4. Health Status & Diseases: Is photo mein koi beemari nazar aa rahi hai?
-            5. Care Instructions: Pani aur dhoop ki zaroorat.
-            """
+            # Simple Prompt for faster response
+            prompt = "Identify this plant. Tell its name, native origin, mother plant details, and any diseases visible in Urdu and English."
             
-            # Naya Model Call tareeqa
-            response = client.models.generate_content(
-                model="gemini-1.5-flash",
-                contents=[prompt, img]
-            )
+            response = model.generate_content([prompt, img])
             
-            st.success("Tashkees Mukammal!")
-            st.markdown("### 📋 Paude ki Mukammal Report:")
-            st.write(response.text)
-            
+            if response.text:
+                st.success("Tashkees Mukammal!")
+                st.markdown("### 📋 Report:")
+                st.write(response.text)
+            else:
+                st.warning("AI ne jawab nahi diya, dobara koshish karein.")
+                
         except Exception as e:
-            st.error(f"System busy hai ya koi masla aa gaya hai: {e}")
+            st.error(f"Error Detail: {e}")
 
-# Aapki final branding
 st.divider()
 st.info("Developed for Imran Qadri | djz")
