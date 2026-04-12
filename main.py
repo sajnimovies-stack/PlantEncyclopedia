@@ -1,12 +1,10 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from PIL import Image
 
-# AI Setup - Stable API Version
-genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
-
-# Forcefully using a stable model path
-model = genai.GenerativeModel('gemini-1.5-flash')
+# Latest AI Setup (Nayi Library)
+# Naeem Bhai, ye naya tareeqa hai jo error nahi deta
+client = genai.Client(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
@@ -27,20 +25,29 @@ if source:
     
     with st.spinner('AI analysis kar raha hai...'):
         try:
-            # Simple Prompt for faster response
-            prompt = "Identify this plant. Tell its name, native origin, mother plant details, and any diseases visible in Urdu and English."
+            # Report ka sawal (Prompt)
+            prompt = """
+            Identify this plant and provide a detailed report in Urdu and English:
+            1. Name and Scientific Name.
+            2. Native Origin (Asal jagah).
+            3. Mother Plant details.
+            4. Health Status & Diseases (Beemariyan).
+            5. Care Instructions.
+            """
             
-            response = model.generate_content([prompt, img])
+            # Naye system mein model call karne ka sahi tareeqa
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=[prompt, img]
+            )
             
-            if response.text:
-                st.success("Tashkees Mukammal!")
-                st.markdown("### 📋 Report:")
-                st.write(response.text)
-            else:
-                st.warning("AI ne jawab nahi diya, dobara koshish karein.")
-                
+            st.success("Tashkees Mukammal!")
+            st.markdown("### 📋 Report:")
+            st.write(response.text)
+            
         except Exception as e:
-            st.error(f"Error Detail: {e}")
+            st.error(f"Error: {e}")
 
+# Aapki branding yahan update kar di hai
 st.divider()
 st.info("Developed for Imran Qadri | djz")
