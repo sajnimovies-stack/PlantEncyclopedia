@@ -2,14 +2,13 @@ import streamlit as st
 from google import genai
 from PIL import Image
 
-# Naya AI Setup (2026 SDK)
-# Naeem Bhai, apni purani key yahan check kar lein ya nayi laga dein
-client = genai.Client(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
+# Nayi API Key jo aapne abhi di hai
+client = genai.Client(api_key="AIzaSyAQeqVe_1bJpHToQYOAu8zwl3948Ztor_U")
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! System updated to Latest SDK.")
+st.write("Welcome Naeem Bhai! Nayi Key ke saath system active hai.")
 
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
@@ -34,7 +33,7 @@ if source:
             5. Care Instructions.
             """
             
-            # Naye system (google-genai) ka sahi call
+            # Latest Model call
             response = client.models.generate_content(
                 model="gemini-1.5-flash",
                 contents=[prompt, img]
@@ -45,9 +44,8 @@ if source:
             st.write(response.text)
             
         except Exception as e:
-            # Agar 404 aaye toh yahan message dikhayega
             st.error(f"Error: {e}")
 
-# Footer Branding
+# Aapki branding
 st.divider()
 st.info("Developed for Imran Qadri | djz")
