@@ -1,14 +1,15 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 from PIL import Image
 
-# AI Setup (Naya Package)
-client = genai.Client(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
+# AI Setup (Stable Version)
+genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Naeem Bhai, ab ye naye Google system par chal rahi hai. Camera aur beemariyon ki report check karein.")
+st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
 
 # Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
@@ -21,24 +22,20 @@ else:
 
 if source:
     img = Image.open(source)
-    st.image(img, caption="Aapki Scan ki hui Photo", use_container_width=True)
+    st.image(img, caption="Aapki Scan ki hui Photo", use_column_width=True)
     
     with st.spinner('AI gehri tashkees (Deep Analysis) kar raha hai...'):
         try:
-            # Mazeed tafseel ke liye prompt
             prompt = """
             Identify this plant and provide a detailed report in Urdu and English:
             1. Name and Scientific Name.
             2. Native Origin: Ye pauda asal mein kis jagah ya mulk se belong karta hai?
             3. Mother Plant: Iska mother plant kaisa hota hai?
-            4. Health Status & Diseases: Is photo mein koi beemari nazar aa rahi hai? Is paude ko aam taur par kaunsi beemariyan lagti hain?
+            4. Health Status & Diseases: Is photo mein koi beemari ya keera (pest) nazar aa raha hai? Is paude ko aam taur par kaunsi beemariyan lagti hain?
             5. Care Instructions: Pani aur dhoop ki zaroorat.
             """
             
-            response = client.models.generate_content(
-                model="gemini-1.5-flash",
-                contents=[prompt, img]
-            )
+            response = model.generate_content([prompt, img])
             
             st.success("Tashkees Mukammal!")
             st.markdown("### 📋 Paude ki Mukammal Report:")
