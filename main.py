@@ -1,22 +1,4 @@
 import streamlit as st
-
-st.set_page_config(page_title="Plant Identifier", layout="centered")
-
-st.title("🌿 Plants Encyclopedia")
-st.write("Welcome Naeem Bhai! Aapka Plant Identifier ab live hai.")
-
-# Camera Input
-picture = st.camera_input("Take a picture of a plant")
-
-if picture:
-    st.image(picture, caption="Aapki tasveer")
-    st.success("Tasveer mil gayi! Processing shuru hai...")
-
-# Gallery Upload
-uploaded_file = st.file_uploader("Ya gallery se photo select karein", type=['jpg', 'png', 'jpeg'])
-if uploaded_file:
-    st.image(uploaded_file)
-import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 
@@ -24,34 +6,46 @@ from PIL import Image
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-st.set_page_config(page_title="Plant Identifier AI", layout="centered")
+st.set_page_config(page_title="Plant Expert AI", layout="wide") # Layout wide rakha hai
 
-st.title("🌿 Plants Encyclopedia (AI)")
-st.write("Welcome Naeem Bhai! Kisi bhi paude ki photo upload karein, AI aapko uski detail batayega.")
+st.title("🌿 Plants Encyclopedia & Doctor AI")
+st.write("Naeem Bhai, ab aap full screen camera istemal kar sakte hain aur paude ki beemariyon ka bhi pata laga sakte hain.")
 
 # Selection method
-option = st.radio("Photo kaise dena chahte hain?", ("Camera se khainchein", "Gallery se select karein"))
+option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
 
-if option == "Camera se khainchein":
-    source = st.camera_input("Take a picture")
+source = None
+
+if option == "Camera (Full Screen)":
+    # Camera input ko container mein rakha hai taake bara nazar aaye
+    source = st.camera_input("Paude ki saaf tasveer khainchein")
 else:
     source = st.file_uploader("Gallery se photo select karein", type=['jpg', 'png', 'jpeg'])
 
 if source:
     img = Image.open(source)
-    st.image(img, caption="Aapki Tasveer", use_column_width=True)
+    st.image(img, caption="Aapki Scan ki hui Photo", use_column_width=True)
     
-    with st.spinner('AI paude ko pehchan raha hai...'):
+    with st.spinner('AI gehri tashkees (Deep Analysis) kar raha hai...'):
         try:
-            # AI ko instruction dena
-            prompt = "Identify this plant. Provide its name, scientific name, health benefits, and care instructions in Urdu and English."
+            # Mazeed tafseel mangne ke liye prompt ko bara kiya hai
+            prompt = """
+            Identify this plant and provide a detailed report in Urdu and English:
+            1. Name and Scientific Name.
+            2. Native Origin: Ye pauda asal mein kis jagah ya mulk se belong karta hai?
+            3. Mother Plant: Iska mother plant kaisa hota hai aur ye kaise barhta hai?
+            4. Health Status & Diseases: Is paude ko kaunsi beemariyan lag sakti hain ya abhi is photo mein koi beemari nazar aa rahi hai?
+            5. Care Instructions: Pani aur dhoop ki zaroorat.
+            """
+            
             response = model.generate_content([prompt, img])
             
             st.success("Tashkees Mukammal!")
-            st.markdown("### 📋 Maloomat (Information):")
+            st.markdown("### 📋 Paude ki Mukammal Report:")
             st.write(response.text)
+            
         except Exception as e:
-            st.error(f"Maaf kijiyega, AI connect nahi ho saka: {e}")
+            st.error(f"System busy hai ya koi masla aa gaya hai: {e}")
 
 st.divider()
-st.caption("Powered by Ruhaniya Suiting - Naeem Shahzad")
+st.caption("Developed for Ruhaniya Suiting | Naeem Shahzad")
