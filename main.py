@@ -5,13 +5,13 @@ from PIL import Image
 # AI Setup (Stable Version)
 genai.configure(api_key="AIzaSyD8-bDJTcVoN-VYmFBpEH-LMQuAd2YREjU")
 
-# Yahan model ka naam "models/" ke saath likhna zaroori hai
-model = genai.GenerativeModel('models/gemini-1.5-flash')
+# Sab se stable model jo har jagah chalta hai
+model = genai.GenerativeModel('gemini-1.5-flash-latest')
 
 st.set_page_config(page_title="Plant Expert AI", layout="wide")
 
 st.title("🌿 Plants Encyclopedia & Doctor AI")
-st.write("Welcome Naeem Bhai! Mobile camera se full screen photo khainchein.")
+st.write("Welcome Naeem Bhai! System ko ab latest model par update kar diya gaya hai.")
 
 # Selection method
 option = st.radio("Option select karein:", ("Camera (Full Screen)", "Gallery se upload karein"))
@@ -45,7 +45,7 @@ if source:
             st.write(response.text)
             
         except Exception as e:
-            st.error(f"Error detail: {e}")
+            st.error(f"Maaf kijiyega, abhi bhi masla hai: {e}")
 
 st.divider()
 st.caption("Developed for Ruhaniya Suiting | Naeem Shahzad")
